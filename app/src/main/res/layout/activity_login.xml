@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_login"
     android:layout_width="match_parent"
@@ -19,18 +19,9 @@
     <LinearLayout
         android:id="@+id/ll1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical|center_horizontal">
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Shipper Manager"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#ffffffff"
-            android:textSize="30dp" />
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal">
 
 
     </LinearLayout>
@@ -38,9 +29,11 @@
     <LinearLayout
         android:id="@+id/ll2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_vertical|center_horizontal">
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_alignTop="@+id/ll1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <ProgressBar
             android:id="@+id/login_progress"
@@ -65,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <AutoCompleteTextView
+                    <EditText
                         android:id="@+id/editTextEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -92,7 +85,7 @@
                         android:textColorHint="#ffffffff" />
 
                     <Button
-                        android:id="@+id/email_sign_in_button"
+                        android:id="@+id/buttonLogin"
                         style="?android:textAppearanceSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -107,21 +100,16 @@
         </ScrollView>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ll3"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="bottom|center_horizontal">
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="Shipper Manager"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#ffffffff"
+        android:textSize="30dp"
+        android:layout_above="@+id/ll1"
+        android:layout_centerHorizontal="true" />
 
-        <TextView
-            android:id="@+id/signUpTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:autoLink="web"
-            android:text="Sign up"
-            android:textColor="#ffffffff"
-            android:textSize="20sp" />
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>
