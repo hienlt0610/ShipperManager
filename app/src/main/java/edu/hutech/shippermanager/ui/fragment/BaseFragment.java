@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.ButterKnife;
 
 /**
@@ -14,6 +16,7 @@ import butterknife.ButterKnife;
  */
 
 public abstract class BaseFragment extends Fragment {
+    private boolean isNeedRegister;
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -25,6 +28,34 @@ public abstract class BaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(getContentView(), container, false);
         return view;
+    }
+
+    protected void setNeedRegister(boolean isRegister){
+        isNeedRegister = isRegister;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(isNeedRegister){
+            try {
+                EventBus.getDefault().register(this);
+            } catch (Throwable t){
+                t.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(isNeedRegister){
+            try {
+                EventBus.getDefault().unregister(this);
+            } catch (Throwable t){
+                t.printStackTrace();
+            }
+        }
     }
 
     protected abstract int getContentView();
