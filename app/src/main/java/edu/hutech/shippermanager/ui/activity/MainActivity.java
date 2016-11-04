@@ -13,6 +13,9 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 
 import edu.hutech.shippermanager.R;
+import edu.hutech.shippermanager.ui.fragment.HomeFragment;
+import edu.hutech.shippermanager.ui.fragment.MapFragment;
+import edu.hutech.shippermanager.utils.FragmentUtils;
 
 public class MainActivity extends BaseActivityAuthorization implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -35,6 +38,9 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Set default fragment
+        FragmentUtils.replaceFragment(R.id.flContent,getSupportFragmentManager(),new HomeFragment());
     }
 
     @Override
@@ -89,9 +95,13 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
 
         if (id == R.id.nav_map) {
             // Handle the camera action
+            FragmentUtils.replaceFragment(R.id.flContent,getSupportFragmentManager(),new MapFragment());
         }
         else if(id == R.id.nav_logout){
             getFireBaseAuth().signOut();
+        }
+        else if(id == R.id.nav_home){
+            FragmentUtils.replaceFragment(R.id.flContent,getSupportFragmentManager(),new HomeFragment());
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
