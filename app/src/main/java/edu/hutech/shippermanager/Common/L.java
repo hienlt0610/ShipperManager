@@ -1,4 +1,4 @@
-package edu.hutech.shippermanager.Common;
+package edu.hutech.shippermanager.common;
 
 import android.content.Context;
 import android.util.Log;
