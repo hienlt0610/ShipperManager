@@ -5,5 +5,5 @@ package edu.hutech.shippermanager.common;
  */
 
 public class FirebaseConfig {
-    public static final String FIREBASE_URL = "https://shippermanager-9752c.firebaseio.com/\n";
+    public static final String FIREBASE_URL = "https://shippermanager-9752c.firebaseio.com";
 }
