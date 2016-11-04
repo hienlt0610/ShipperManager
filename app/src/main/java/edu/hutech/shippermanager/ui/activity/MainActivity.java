@@ -14,14 +14,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import edu.hutech.shippermanager.R;
-import edu.hutech.shippermanager.common.L;
 import edu.hutech.shippermanager.ui.fragment.HomeFragment;
 import edu.hutech.shippermanager.ui.fragment.MapFragment;
 import edu.hutech.shippermanager.utils.FragmentUtils;
 
-public class MainActivity extends BaseActivityAuthorization implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends BaseActivityAuthorization implements NavigationView.OnNavigationItemSelectedListener {
 
     private FirebaseUser mUser;
+
+
     @Override
     int getContentView() {
         return R.layout.activity_main;
@@ -42,7 +43,6 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
     }
 
     @Override
@@ -50,7 +50,6 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
         mUser = firebaseAuth.getCurrentUser();
         //Set default fragment
         FragmentUtils.replaceFragment(R.id.flContent,getSupportFragmentManager(),new HomeFragment());
-        L.Toast(mUser.getUid());
     }
 
     @Override

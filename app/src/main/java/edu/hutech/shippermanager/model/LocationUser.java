@@ -4,13 +4,13 @@ package edu.hutech.shippermanager.model;
  * Created by jerem on 04/11/2016.
  */
 
-public class Location {
+public class LocationUser {
     private double lat;
     private double lng;
-    private int time;
+    private long time;
     private String userId;
 
-    public Location() {
+    public LocationUser() {
     }
 
     public double getLat() {
@@ -29,7 +29,7 @@ public class Location {
         this.lng = lng;
     }
 
-    public int getTime() {
+    public long getTime() {
         return time;
     }
 
@@ -45,10 +45,12 @@ public class Location {
         this.userId = userId;
     }
 
-    public Location(double lat, double lng, int time, String userId) {
+    public LocationUser(double lat, double lng, long time, String userId) {
         this.lat = lat;
         this.lng = lng;
         this.time = time;
         this.userId = userId;
+
     }
 }
+
