@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">ShipperManager</string>
+    <string name="title_activity_nav__menu">Nav_MenuActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

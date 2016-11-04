@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Created by hienl on 11/4/2016.
@@ -21,7 +22,12 @@ public abstract class BaseActivityAuthorization extends BaseActivity implements 
 
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        onAuthChanged(firebaseAuth);
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null) {
+            onAuthentication(firebaseAuth);
+        }else{
+            onAuthError();
+        }
     }
 
     @Override
@@ -40,6 +46,7 @@ public abstract class BaseActivityAuthorization extends BaseActivity implements 
         return mAuth;
     }
 
-    abstract void onAuthChanged(FirebaseAuth firebaseAuth);
+    abstract void onAuthentication(FirebaseAuth firebaseAuth);
+    abstract void onAuthError();
 }
 

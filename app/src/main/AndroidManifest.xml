@@ -19,22 +19,23 @@
         android:value="@integer/google_play_services_version" />
 
     <application
+        android:name=".common.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".common.App"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.MainActivity">
-        </activity>
-        <activity android:name=".ui.activity.LoginActivity" android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".ui.activity.MainActivity" android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.RegisterActivity"></activity>
+        <activity android:name=".ui.activity.RegisterActivity" />
     </application>
 
 </manifest>
