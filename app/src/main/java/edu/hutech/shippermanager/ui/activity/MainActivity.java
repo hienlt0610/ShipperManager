@@ -14,9 +14,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import edu.hutech.shippermanager.R;
+import edu.hutech.shippermanager.service.GeoService;
 import edu.hutech.shippermanager.ui.fragment.HomeFragment;
 import edu.hutech.shippermanager.ui.fragment.MapFragment;
 import edu.hutech.shippermanager.utils.FragmentUtils;
+import edu.hutech.shippermanager.utils.ServiceUtils;
 
 public class MainActivity extends BaseActivityAuthorization implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -103,9 +105,13 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
         }
         else if(id == R.id.nav_logout){
             getFireBaseAuth().signOut();
+            if(ServiceUtils.isServiceRunning(this, GeoService.class)){
+                stopService(new Intent(this,GeoService.class));
+            }
         }
         else if(id == R.id.nav_home){
-            FragmentUtils.replaceFragment(R.id.flContent,getSupportFragmentManager(),new HomeFragment());
+            String uid = mUser.getUid();
+            FragmentUtils.replaceFragment(R.id.flContent,getSupportFragmentManager(), HomeFragment.newInstance(uid));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

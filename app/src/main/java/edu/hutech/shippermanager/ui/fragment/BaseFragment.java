@@ -17,6 +17,7 @@ import butterknife.ButterKnife;
 
 public abstract class BaseFragment extends Fragment {
     private boolean isNeedRegister;
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

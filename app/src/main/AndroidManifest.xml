@@ -38,6 +38,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.RegisterActivity" />
+        <service android:name=".service.GeoService"></service>
     </application>
 
 </manifest>

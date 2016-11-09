@@ -10,8 +10,12 @@ import android.widget.Toast;
 
 public class L {
     public static String TAG = "hienlt0610";
+
+    public static final boolean DEBUG = true;
+
     public static void Log(String tag, String message){
-        Log.d(tag,message);
+        if(DEBUG)
+            Log.d(tag,message);
     }
 
     public static void Log(String message){
