@@ -14,6 +14,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -38,6 +40,7 @@ public class GeoService extends Service implements LocationListener {
     private long minTime = 5000;
     private float minDistance = 10;
     private String userID = null;
+    private FirebaseUser fireUser;
 
     @Override
     public void onCreate() {
@@ -45,6 +48,7 @@ public class GeoService extends Service implements LocationListener {
         L.Log("Serive start");
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         fireLocation = FirebaseDatabase.getInstance().getReference("location");
+        fireUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @Override
@@ -69,7 +73,8 @@ public class GeoService extends Service implements LocationListener {
         loca.setLng(location.getLongitude());
         loca.setTime(new Date().getTime());
         loca.setUserId(userID);
-        fireLocation.push().setValue(loca);
+        //fireLocation.push().setValue(loca);
+        fireLocation.child(fireUser.getUid()).setValue(loca);
     }
 
     @Override
