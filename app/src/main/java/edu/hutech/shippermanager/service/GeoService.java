@@ -53,7 +53,7 @@ public class GeoService extends Service implements LocationListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(userID == null){
+        if (userID == null) {
             userID = intent.getStringExtra(HomeFragment.USER_ID_PARAM);
         }
         startListening();
@@ -72,7 +72,7 @@ public class GeoService extends Service implements LocationListener {
         loca.setLat(location.getLatitude());
         loca.setLng(location.getLongitude());
         loca.setTime(new Date().getTime());
-        loca.setUserId(userID);
+        loca.setUserId(fireUser.getEmail());
         //fireLocation.push().setValue(loca);
         fireLocation.child(fireUser.getUid()).setValue(loca);
     }
@@ -128,12 +128,12 @@ public class GeoService extends Service implements LocationListener {
             }
             locationManager.removeUpdates(this);
             mIsListening = false;
-        }else{
+        } else {
             L.Log("Location tracker không được chạy");
         }
     }
 
-    public boolean isListening(){
+    public boolean isListening() {
         return mIsListening;
     }
 

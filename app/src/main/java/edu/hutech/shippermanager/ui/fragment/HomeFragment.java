@@ -9,6 +9,7 @@ import android.widget.Button;
 import butterknife.BindView;
 import butterknife.OnClick;
 import edu.hutech.shippermanager.R;
+import edu.hutech.shippermanager.common.L;
 import edu.hutech.shippermanager.service.GeoService;
 
 /**
@@ -23,12 +24,23 @@ public class HomeFragment extends BaseFragment{
     Button btnActive;
     public static final String USER_ID_PARAM = "user_id";
     private String userID;
+    private boolean flag = false;
 
     @OnClick(R.id.buttonActive)
     public void activeClick(View view) {
         Intent intent = new Intent(getContext(), GeoService.class);
         intent.putExtra(USER_ID_PARAM,userID);
-        getActivity().startService(intent);
+        if(flag == false ){
+            getActivity().startService(intent);
+            L.Toast("Dịch vụ kích hoạt thành công!");
+            flag = true;
+        }
+        else{
+            getActivity().stopService(intent);
+            L.Toast("Dịch vụ đã được hủy!");
+            flag = false;
+        }
+
     }
 
     public HomeFragment() {
