@@ -10,19 +10,24 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Date;
 
+import edu.hutech.shippermanager.R;
+import edu.hutech.shippermanager.common.FirebaseConfig;
 import edu.hutech.shippermanager.common.L;
 import edu.hutech.shippermanager.model.LocationUser;
-import edu.hutech.shippermanager.ui.fragment.HomeFragment;
 import edu.hutech.shippermanager.utils.LocationUtils;
+import edu.hutech.shippermanager.utils.NotificationUtils;
+import edu.hutech.shippermanager.utils.TimeUtils;
 
 /**
  * Created by hienl on 11/4/2016.
@@ -35,24 +40,42 @@ public class GeoService extends Service implements LocationListener {
     private LocationManager locationManager;
     private boolean mIsListening = false;
     private DatabaseReference fireLocation;
-    private long minTime = 5000;
+    private long minTime = 3000;
     private float minDistance = 10;
     private String userID = null;
+    public static int NOTIFICATION_ID = 126;
+    private Handler timer;
+    private long currentTime = 0 ;
+    NotificationCompat.Builder notifiBuilder;
+
+    public static final String START_TRACKING = "edu.hutech.shippermanager.START_TRACKING";
+    public static final String STOP_TRACKING = "edu.hutech.shippermanager.STOP_TRACKING";
 
     @Override
     public void onCreate() {
         super.onCreate();
         L.Log("Serive start");
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        fireLocation = FirebaseDatabase.getInstance().getReference("location");
+        fireLocation = FirebaseDatabase.getInstance().getReference(FirebaseConfig.USER_LOCATION_CHILD);
+        notifiBuilder = NotificationUtils.create(this,null, R.drawable.ic_map,"Đang tracking","0:00");
+        startForeground(NOTIFICATION_ID, notifiBuilder.build());
+        timer = new Handler();
+        timer.post(schedule);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if(userID == null){
-            userID = intent.getStringExtra(HomeFragment.USER_ID_PARAM);
+            userID = intent.getStringExtra("user_id");
         }
-        startListening();
+        if(intent != null){
+            String action = intent.getAction();
+            if(action.equals(START_TRACKING)){
+                startListening();
+            }else if(action.equals(STOP_TRACKING)){
+                stopListening();
+            }
+        }
         return START_STICKY;
     }
 
@@ -67,9 +90,8 @@ public class GeoService extends Service implements LocationListener {
         LocationUser loca = new LocationUser();
         loca.setLat(location.getLatitude());
         loca.setLng(location.getLongitude());
-        loca.setTime(new Date().getTime());
-        loca.setUserId(userID);
-        fireLocation.push().setValue(loca);
+        loca.setLastTime(new Date().getTime());
+        fireLocation.child(userID).setValue(loca);
     }
 
     @Override
@@ -136,6 +158,7 @@ public class GeoService extends Service implements LocationListener {
     public void onDestroy() {
         super.onDestroy();
         stopListening();
+        timer.removeCallbacks(schedule);
     }
 
     /**
@@ -143,9 +166,19 @@ public class GeoService extends Service implements LocationListener {
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
     public class GeoBinder extends Binder {
-        GeoService getService() {
+        public GeoService getService() {
             // Return this instance of GeoService so clients can call public methods
             return GeoService.this;
         }
     }
+
+    Runnable schedule = new Runnable() {
+        @Override
+        public void run() {
+            currentTime++;
+            notifiBuilder.setContentText(TimeUtils.getConvertedTime(currentTime));
+            NotificationUtils.sendNotification(NOTIFICATION_ID,GeoService.this,notifiBuilder.build());
+            timer.postDelayed(this,1000);
+        }
+    };
 }

@@ -1,6 +1,7 @@
 package edu.hutech.shippermanager.utils;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -32,6 +33,23 @@ public class MiscUtils {
     private MiscUtils() {
         throw new UnsupportedOperationException(
                 "Should not create instance of Util class. Please use as static..");
+    }
+
+    private static ProgressDialog progressDialog;
+
+    public static void showProcessDialog(Context context, String title, String message, boolean cancelAble){
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle(title);
+        progressDialog.setMessage(message);
+        progressDialog.setCancelable(cancelAble);
+        progressDialog.show();
+    }
+
+    public static void cancleProcessDialog(){
+        if(progressDialog != null && progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+        progressDialog = null;
     }
 
     /**

@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
  * Created by hienl on 11/5/2016.
  */
 
-public class DateUtils {
-    private DateUtils(){}
+public class TimeUtils {
+    private TimeUtils(){}
 
     /**
      * Convert Datetime to format String
@@ -110,8 +110,8 @@ public class DateUtils {
      * @return The name of the day of the week
      **/
     public static String getDayOfWeek(String date) {
-        // TODO: move to DateUtils
-        Date dateDT = DateUtils.parseDate(date);
+        // TODO: move to TimeUtils
+        Date dateDT = TimeUtils.parseDate(date);
 
         if (dateDT == null) {
             return null;
@@ -191,5 +191,33 @@ public class DateUtils {
         return TimeUnit.SECONDS.toSeconds(Calendar.getInstance()
                 .getTimeInMillis());
 
+    }
+
+    /**
+     * Get String format time
+     * @param lnValue
+     * @return
+     */
+    public static String getConvertedTime(long lnValue) {     //OK
+        String lcStr = "00:00:00";
+        String lcSign = (lnValue >= 0 ? " " : "-");
+        lnValue = lnValue * (lnValue >= 0 ? 1 : -1);
+
+        if (lnValue > 0) {
+            long lnHor = (lnValue / 3600);
+            long lnHor1 = (lnValue % 3600);
+            long lnMin = (lnHor1 / 60);
+            long lnSec = (lnHor1 % 60);
+
+            lcStr = lcSign + (lnHor < 10 ? "0" : "") + String.valueOf(lnHor) + ":" +
+                    (lnMin < 10 ? "0" : "") + String.valueOf(lnMin) + ":" +
+                    (lnSec < 10 ? "0" : "") + String.valueOf(lnSec);
+        }
+
+        return lcStr;
+    }
+
+    public static long getTimeStamp(){
+        return new Date().getTime();
     }
 }

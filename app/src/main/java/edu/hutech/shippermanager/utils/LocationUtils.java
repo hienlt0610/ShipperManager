@@ -30,7 +30,7 @@ public class LocationUtils {
      * @param positiveLabel     The positive button text
      * @param negativeLabel     The negative button text
      */
-    public void askEnableProviders(final Context context, String message, String positiveLabel, String negativeLabel){
+    public static void askEnableProviders(final Context context, String message, String positiveLabel, String negativeLabel){
         new AlertDialog.Builder(context)
                 .setMessage(message)
                 .setCancelable(false)

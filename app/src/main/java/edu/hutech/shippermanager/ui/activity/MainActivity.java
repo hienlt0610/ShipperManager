@@ -17,6 +17,7 @@ import edu.hutech.shippermanager.R;
 import edu.hutech.shippermanager.service.GeoService;
 import edu.hutech.shippermanager.ui.fragment.HomeFragment;
 import edu.hutech.shippermanager.ui.fragment.MapFragment;
+import edu.hutech.shippermanager.ui.fragment.TrackingFragment;
 import edu.hutech.shippermanager.utils.FragmentUtils;
 import edu.hutech.shippermanager.utils.ServiceUtils;
 
@@ -112,6 +113,9 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
         else if(id == R.id.nav_home){
             String uid = mUser.getUid();
             FragmentUtils.replaceFragment(R.id.flContent,getSupportFragmentManager(), HomeFragment.newInstance(uid));
+        }
+        else if(id == R.id.nav_location){
+            FragmentUtils.replaceFragment(R.id.flContent,getSupportFragmentManager(), new TrackingFragment());
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

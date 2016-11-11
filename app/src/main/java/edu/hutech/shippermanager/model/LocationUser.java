@@ -7,7 +7,7 @@ package edu.hutech.shippermanager.model;
 public class LocationUser {
     private double lat;
     private double lng;
-    private long time;
+    private long lastTime;
     private String userId;
 
     public LocationUser() {
@@ -29,12 +29,12 @@ public class LocationUser {
         this.lng = lng;
     }
 
-    public long getTime() {
-        return time;
+    public long getLastTime() {
+        return lastTime;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setLastTime(long lastTime) {
+        this.lastTime = lastTime;
     }
 
     public String getUserId() {
@@ -45,10 +45,10 @@ public class LocationUser {
         this.userId = userId;
     }
 
-    public LocationUser(double lat, double lng, long time, String userId) {
+    public LocationUser(double lat, double lng, long lastTime, String userId) {
         this.lat = lat;
         this.lng = lng;
-        this.time = time;
+        this.lastTime = lastTime;
         this.userId = userId;
 
     }

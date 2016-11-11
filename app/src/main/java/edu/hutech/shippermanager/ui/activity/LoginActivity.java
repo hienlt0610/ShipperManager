@@ -17,6 +17,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import edu.hutech.shippermanager.R;
 import edu.hutech.shippermanager.common.L;
+import edu.hutech.shippermanager.utils.MiscUtils;
 import edu.hutech.shippermanager.utils.NetworkUtils;
 
 public class LoginActivity extends BaseActivityAuthorization {
@@ -63,6 +64,7 @@ public class LoginActivity extends BaseActivityAuthorization {
             L.Toast("Vui lòng nhập Password");
             return;
         }
+        MiscUtils.showProcessDialog(this,"Đang đăng nhập","Hệ thống đang xử lý đăng nhập, vui lòng chờ",true);
         getFireBaseAuth().signInWithEmailAndPassword(edtEmail.getText().toString(), edtPass.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -87,6 +89,7 @@ public class LoginActivity extends BaseActivityAuthorization {
                             Intent iMainAct = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(iMainAct);
                         }
+                        MiscUtils.cancleProcessDialog();
 
                         // ...
                     }

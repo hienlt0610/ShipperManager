@@ -42,7 +42,7 @@ public abstract class BaseActivityAuthorization extends BaseActivity implements 
         mAuth.removeAuthStateListener(this);
     }
 
-    protected FirebaseAuth getFireBaseAuth() {
+    public FirebaseAuth getFireBaseAuth() {
         return mAuth;
     }
 
