@@ -49,7 +49,6 @@ public class TrackingFragment extends BaseFragment {
                     }
                     Intent iTrackingStart = new Intent(getActivity(),GeoService.class);
                     iTrackingStart.setAction(GeoService.START_TRACKING);
-                    iTrackingStart.putExtra("user_id", mUser.getUid());
                     getActivity().startService(iTrackingStart);
                 }else if (checkedId == R.id.rbStop){
                     Intent iTrackingStart = new Intent(getActivity(),GeoService.class);
