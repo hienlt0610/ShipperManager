@@ -1,24 +1,16 @@
 package edu.hutech.shippermanager.ui.fragment;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
-import android.widget.TextView;
-
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import android.widget.Button;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import edu.hutech.shippermanager.R;
-import edu.hutech.shippermanager.common.FirebaseConfig;
-import edu.hutech.shippermanager.model.User;
-import edu.hutech.shippermanager.ui.activity.BaseActivityAuthorization;
+import edu.hutech.shippermanager.common.L;
+import edu.hutech.shippermanager.service.GeoService;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,12 +20,28 @@ import edu.hutech.shippermanager.ui.activity.BaseActivityAuthorization;
  * create an instance of this fragment.
  */
 public class HomeFragment extends BaseFragment{
+    @BindView(R.id.buttonActive)
+    Button btnActive;
     public static final String USER_ID_PARAM = "user_id";
     private String userID;
-    private FirebaseUser user;
+    private boolean flag = false;
 
-    @BindView(R.id.tvWelcome)
-    TextView tvWelcome;
+    @OnClick(R.id.buttonActive)
+    public void activeClick(View view) {
+        Intent intent = new Intent(getContext(), GeoService.class);
+        intent.putExtra(USER_ID_PARAM,userID);
+        if(flag == false ){
+            getActivity().startService(intent);
+            L.Toast("Dịch vụ kích hoạt thành công!");
+            flag = true;
+        }
+        else{
+            getActivity().stopService(intent);
+            L.Toast("Dịch vụ đã được hủy!");
+            flag = false;
+        }
+
+    }
 
     public HomeFragment() {
         // Required empty public constructor
@@ -52,32 +60,6 @@ public class HomeFragment extends BaseFragment{
         if (getArguments() != null) {
             userID = getArguments().getString(USER_ID_PARAM);
         }
-    }
-
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference(FirebaseConfig.USERS_CHILD).child(user.getUid());
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        BaseActivityAuthorization activity = ((BaseActivityAuthorization) context);
-        user = activity.getFireBaseAuth().getCurrentUser();
-
     }
 
     @Override

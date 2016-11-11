@@ -4,7 +4,6 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home"
             android:title="Trang chủ" />
         <item
             android:id="@+id/nav_map"
@@ -28,7 +27,8 @@
                 android:title="Send" />
             <item
                 android:id="@+id/nav_logout"
-                android:title="Logout" />
+                android:icon="@drawable/ic_menu_logout"
+                android:title="Thoát" />
         </menu>
     </item>
 
