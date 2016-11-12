@@ -16,6 +16,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -47,6 +49,7 @@ public class GeoService extends Service implements LocationListener {
     private Handler timer;
     private long currentTime = 0 ;
     NotificationCompat.Builder notifiBuilder;
+    private FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 
     public static final String START_TRACKING = "edu.hutech.shippermanager.START_TRACKING";
     public static final String STOP_TRACKING = "edu.hutech.shippermanager.STOP_TRACKING";
@@ -87,11 +90,15 @@ public class GeoService extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+        if(mUser == null){
+            stopListening();
+            return;
+        }
         LocationUser loca = new LocationUser();
         loca.setLat(location.getLatitude());
         loca.setLng(location.getLongitude());
         loca.setLastTime(new Date().getTime());
-        fireLocation.child(userID).setValue(loca);
+        fireLocation.child(mUser.getUid()).setValue(loca);
     }
 
     @Override
@@ -122,6 +129,7 @@ public class GeoService extends Service implements LocationListener {
                     // for ActivityCompat#requestPermissions for more details.
                     return;
                 }
+                if(mUser == null) return ;
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, this);
                 mIsListening = true;
             }
