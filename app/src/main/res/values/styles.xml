@@ -1,18 +1,11 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
-        <item name="colorControlNormal">#ffffff</item>
-        <item name="colorControlActivated">@color/accent</item>
-        <item name="colorControlHighlight">@color/accent</item>
-        <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
-        <item name="android:autoCompleteTextViewStyle">@style/RobotoAutoCompleteTextViewStyle</item>
-        <item name="android:editTextStyle">@style/RobotoEditTextStyle</item>
     </style>
 
     <!-- Base application theme. -->
@@ -28,10 +21,13 @@
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
-    <color name="accent">#ffffff</color>
+    <color name="accent">#000</color>
 
-    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
-
+    <style name="AppTheme.TransparentToolBar" parent="AppTheme">
+        <item name="android:windowActionBarOverlay">true</item>
+        <!-- Support library compatibility -->
+        <item name="windowActionBarOverlay">true</item>
+        <item name="colorPrimary">@android:color/transparent</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

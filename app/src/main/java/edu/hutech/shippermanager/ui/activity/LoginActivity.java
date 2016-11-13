@@ -18,7 +18,6 @@ import butterknife.OnClick;
 import edu.hutech.shippermanager.R;
 import edu.hutech.shippermanager.common.L;
 import edu.hutech.shippermanager.utils.MiscUtils;
-import edu.hutech.shippermanager.utils.NetworkUtils;
 
 public class LoginActivity extends BaseActivityAuthorization {
 
@@ -51,11 +50,6 @@ public class LoginActivity extends BaseActivityAuthorization {
 
     @OnClick(R.id.buttonLogin)
     public void Login(Button btnLogin) {
-        if(!NetworkUtils.isOnline())
-        {
-            L.Toast("Mạng không khả dụng, vui lòng kiểm tra lại kết nối");
-            return;
-        }
         if (TextUtils.isEmpty(edtEmail.getText())) {
             L.Toast("Vui lòng nhập email");
             return;

@@ -185,13 +185,13 @@ public class MiscUtils {
      * dismisses.
      **/
     public static void showAlertDialog(Context ctx, String title, String body) {
-        showAlertDialog(ctx, title, body, null);
+        showAlertDialog(ctx, title, body, null,true);
     }
 
     /**
      * Shows an alert dialog with OK button
      **/
-    public static void showAlertDialog(Context ctx, String title, String body, DialogInterface.OnClickListener okListener) {
+    public static void showAlertDialog(Context ctx, String title, String body, DialogInterface.OnClickListener okListener,boolean cancelable) {
 
         if (okListener == null) {
             okListener = new DialogInterface.OnClickListener() {
@@ -207,7 +207,7 @@ public class MiscUtils {
         if (!TextUtils.isEmpty(title)) {
             builder.setTitle(title);
         }
-
+        builder.setCancelable(cancelable);
         builder.show();
     }
 

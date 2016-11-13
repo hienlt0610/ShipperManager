@@ -5,6 +5,6 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    app:theme="@style/AppTheme.AppBarOverlay"
-    android:background="@color/colorPrimary"
-    app:popupTheme="@style/AppTheme.PopupOverlay" />
+    android:background="@drawable/background_toolbar_translucent"
+    app:theme="@style/AppTheme.TransparentToolBar"
+    app:popupTheme="@style/AppTheme.PopupOverlay"/>

@@ -1,29 +1,46 @@
 package edu.hutech.shippermanager.ui.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import butterknife.BindView;
 import edu.hutech.shippermanager.R;
+import edu.hutech.shippermanager.common.FirebaseConfig;
+import edu.hutech.shippermanager.model.User;
 import edu.hutech.shippermanager.service.GeoService;
 import edu.hutech.shippermanager.ui.fragment.HomeFragment;
 import edu.hutech.shippermanager.ui.fragment.MapFragment;
 import edu.hutech.shippermanager.ui.fragment.TrackingFragment;
 import edu.hutech.shippermanager.utils.FragmentUtils;
+import edu.hutech.shippermanager.utils.MiscUtils;
 import edu.hutech.shippermanager.utils.ServiceUtils;
 
 public class MainActivity extends BaseActivityAuthorization implements NavigationView.OnNavigationItemSelectedListener {
 
     private FirebaseUser mUser;
+    private DatabaseReference userChild;
+
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+    View viewHeader;
+    TextView tvFullName, tvEmail;
 
 
     @Override
@@ -34,18 +51,16 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, getToolbar(), R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        viewHeader = navigationView.getHeaderView(0);
+        tvFullName = (TextView) viewHeader.findViewById(R.id.tvFullName);
+        tvEmail = (TextView) viewHeader.findViewById(R.id.tvEmail);
+        userChild = FirebaseDatabase.getInstance().getReference(FirebaseConfig.USERS_CHILD);
     }
 
     @Override
@@ -53,6 +68,33 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
         mUser = firebaseAuth.getCurrentUser();
         //Set default fragment
         FragmentUtils.replaceFragment(R.id.flContent,getSupportFragmentManager(),new HomeFragment());
+        checkProfile();
+    }
+
+    private void checkProfile() {
+        userChild.child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if(user == null || user.getFullName() == null || user.getPhone() == null){
+                    MiscUtils.showAlertDialog(MainActivity.this, "Thiếu thông tin cá nhân", "Bạn vui lòng bổ sung thông tin cá nhân đầy đủ trước khi sử dụng app", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+                            startActivity(intent);
+                        }
+                    },false);
+                }else{
+                    tvEmail.setText(mUser.getEmail());
+                    tvFullName.setText(user.getFullName());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -85,12 +127,13 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.action_settings:
+                break;
+            case R.id.action_profile:
+                startActivity(new Intent(MainActivity.this,ProfileActivity.class));
+                break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
