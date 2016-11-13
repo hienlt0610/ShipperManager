@@ -8,6 +8,8 @@ public class User {
     private String userID;
     private String email;
     private String fullName;
+    private String phone;
+    private String profilePicture;
 
     public String getUserID() {
         return userID;
@@ -31,5 +33,21 @@ public class User {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }
