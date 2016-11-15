@@ -1,9 +1,11 @@
 package edu.hutech.shippermanager.ui.activity;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -31,11 +33,18 @@ import edu.hutech.shippermanager.ui.fragment.TrackingFragment;
 import edu.hutech.shippermanager.utils.FragmentUtils;
 import edu.hutech.shippermanager.utils.MiscUtils;
 import edu.hutech.shippermanager.utils.ServiceUtils;
+import edu.hutech.shippermanager.utils.StringUtils;
+import edu.hutech.shippermanager.utils.SupportVersion;
 
 public class MainActivity extends BaseActivityAuthorization implements NavigationView.OnNavigationItemSelectedListener {
 
     private FirebaseUser mUser;
     private DatabaseReference userChild;
+    private int requestPermissionCode = 22;
+
+    public static final String FRAGMENT_TRACKER  = "edu.hutech.shippermanager.FRAGMENT_TRACKER";
+    public static final String FRAGMENT_HOME  = "edu.hutech.shippermanager.FRAGMENT_HOME";
+    public static final String FRAGMENT_MAP  = "edu.hutech.shippermanager.FRAGMENT_MAP";
 
     @BindView(R.id.nav_view)
     NavigationView navigationView;
@@ -61,14 +70,41 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
         tvFullName = (TextView) viewHeader.findViewById(R.id.tvFullName);
         tvEmail = (TextView) viewHeader.findViewById(R.id.tvEmail);
         userChild = FirebaseDatabase.getInstance().getReference(FirebaseConfig.USERS_CHILD);
+        requestPermisstion();
+    }
+
+    private void requestPermisstion() {
+        if(!SupportVersion.isMarshmallow()) return;
+        MiscUtils.requestMissingPermissions(this,requestPermissionCode,new String[]{
+                Manifest.permission.ACCESS_NETWORK_STATE,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+        });
     }
 
     @Override
     void onAuthentication(FirebaseAuth firebaseAuth) {
         mUser = firebaseAuth.getCurrentUser();
         //Set default fragment
-        FragmentUtils.replaceFragment(R.id.flContent,getSupportFragmentManager(),new HomeFragment());
+        setDefaultFragment();
         checkProfile();
+    }
+
+    private void setDefaultFragment() {
+        Fragment defaultFragment = new HomeFragment();
+        if(getIntent() != null){
+            Intent intent = getIntent();
+            String action = intent.getAction();
+            if(StringUtils.isNotEmpty(action)) {
+                if(action.equals(FRAGMENT_MAP)){
+                    defaultFragment = new MapFragment();
+                }
+                else if(action.equals(FRAGMENT_TRACKER)){
+                    defaultFragment = new TrackingFragment();
+                }
+            }
+        }
+        FragmentUtils.replaceFragment(R.id.flContent,getSupportFragmentManager(), defaultFragment);
     }
 
     private void checkProfile() {
