@@ -18,15 +18,22 @@ import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.hutech.shippermanager.R;
 import edu.hutech.shippermanager.common.FirebaseConfig;
 import edu.hutech.shippermanager.common.L;
 import edu.hutech.shippermanager.model.LocationUser;
+import edu.hutech.shippermanager.ui.activity.MainActivity;
 import edu.hutech.shippermanager.utils.LocationUtils;
 import edu.hutech.shippermanager.utils.NotificationUtils;
 import edu.hutech.shippermanager.utils.TimeUtils;
@@ -35,21 +42,23 @@ import edu.hutech.shippermanager.utils.TimeUtils;
  * Created by hienl on 11/4/2016.
  */
 
-public class GeoService extends Service implements LocationListener {
+public class GeoService extends Service implements LocationListener, ValueEventListener {
 
     // Binder given to clients
     private final IBinder mBinder = new GeoBinder();
     private LocationManager locationManager;
     private boolean mIsListening = false;
     private DatabaseReference fireLocation;
-    private long minTime = 3000;
-    private float minDistance = 10;
+    private long minTime = 1000;
+    private float minDistance = 5;
     private String userID = null;
     public static int NOTIFICATION_ID = 126;
     private Handler timer;
     private long currentTime = 0 ;
     NotificationCompat.Builder notifiBuilder;
     private FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+    private DatabaseReference connectedRef;
+    private DatabaseReference userRef;
 
     public static final String START_TRACKING = "edu.hutech.shippermanager.START_TRACKING";
     public static final String STOP_TRACKING = "edu.hutech.shippermanager.STOP_TRACKING";
@@ -60,10 +69,14 @@ public class GeoService extends Service implements LocationListener {
         L.Log("Serive start");
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         fireLocation = FirebaseDatabase.getInstance().getReference(FirebaseConfig.USER_LOCATION_CHILD);
-        notifiBuilder = NotificationUtils.create(this,null, R.drawable.ic_map,"Đang tracking","0:00");
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setAction(MainActivity.FRAGMENT_TRACKER);
+        notifiBuilder = NotificationUtils.create(this,intent, R.drawable.ic_map,"Đang tracking","0:00");
         startForeground(NOTIFICATION_ID, notifiBuilder.build());
         timer = new Handler();
         timer.post(schedule);
+        connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        userRef = FirebaseDatabase.getInstance().getReference("presences").child(mUser.getUid());
     }
 
     @Override
@@ -132,6 +145,7 @@ public class GeoService extends Service implements LocationListener {
                 if(mUser == null) return ;
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, this);
                 mIsListening = true;
+                connectedRef.addValueEventListener(this);
             }
         } else {
             L.Log("Location tracking đang được chạy");
@@ -153,6 +167,8 @@ public class GeoService extends Service implements LocationListener {
             }
             locationManager.removeUpdates(this);
             mIsListening = false;
+            userRef.setValue(getOfflineValue());
+            connectedRef.removeEventListener(this);
         }else{
             L.Log("Location tracker không được chạy");
         }
@@ -167,6 +183,24 @@ public class GeoService extends Service implements LocationListener {
         super.onDestroy();
         stopListening();
         timer.removeCallbacks(schedule);
+    }
+    @Override
+    public void onDataChange(DataSnapshot dataSnapshot) {
+        if ((Boolean) dataSnapshot.getValue()) {
+            userRef.onDisconnect().setValue(getOfflineValue(), new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                    if(databaseError == null){
+                        userRef.setValue(getOnlineValue());
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+
     }
 
     /**
@@ -189,4 +223,18 @@ public class GeoService extends Service implements LocationListener {
             timer.postDelayed(this,1000);
         }
     };
+
+    private Map<String, Object> getOfflineValue() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", "offline");
+        map.put("lastSeen", ServerValue.TIMESTAMP);
+        return map;
+    }
+
+    private Map<String, Object> getOnlineValue() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", "online");
+        map.put("lastSeen", ServerValue.TIMESTAMP);
+        return map;
+    }
 }

@@ -104,6 +104,7 @@ public class ProfileActivity extends BaseActivityAuthorization {
                 user.setFullName(edtFullName.getText().toString());
                 user.setPhone(edtPhone.getText().toString());
                 user.setProfilePicture(null);
+                user.setEmail(fUser.getEmail());
                 rootFire.child(fUser.getUid()).setValue(user);
                 Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                 this.finish();
