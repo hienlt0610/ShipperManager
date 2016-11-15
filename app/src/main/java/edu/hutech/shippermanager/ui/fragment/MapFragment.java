@@ -1,9 +1,14 @@
 package edu.hutech.shippermanager.ui.fragment;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
@@ -11,16 +16,17 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -33,52 +39,50 @@ import edu.hutech.shippermanager.common.L;
 import edu.hutech.shippermanager.model.Routes;
 import edu.hutech.shippermanager.service.DirectionFinder;
 import edu.hutech.shippermanager.service.DirectionFinderListener;
+import edu.hutech.shippermanager.utils.LocationUtils;
 
 
-public class MapFragment extends BaseFragment implements OnMapReadyCallback, DirectionFinderListener {
+public class MapFragment extends BaseFragment implements OnMapReadyCallback, DirectionFinderListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
-    private FirebaseDatabase mData;
     private List<Marker> originMarkers = new ArrayList<>();
     private List<Marker> destinationMarkers = new ArrayList<>();
     private List<Polyline> polylinePaths = new ArrayList<>();
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+    private LocationManager locationManager;
+    private String currentAddress;
 
-    @BindView(R.id.editTextAddressDi)
-    EditText edtAddressDi;
     @BindView(R.id.editTextAddress)
     EditText edtAddress;
     @BindView(R.id.textViewDistance)
     TextView tvDistance;
+
     @OnClick(R.id.buttonFindPath)
 
-    public void FindPath(View view){
+    public void FindPath(View view) {
         sendRequest();
     }
 
     private void sendRequest() {
         String address = edtAddress.getText().toString();
-        String addressDi = edtAddressDi.getText().toString();
-        if (address.isEmpty()) {
-            L.Toast("Vui lòng nhập địa điểm đi!");
-            return;
-        }
         if (address.isEmpty()) {
             L.Toast("Vui lòng nhập địa điểm đến!");
             return;
         }
         try {
-            new DirectionFinder(getActivity(),this,addressDi,address).execute();
-} catch (UnsupportedEncodingException e) {
-        e.printStackTrace();
+            new DirectionFinder(getActivity(), this, currentAddress, address).execute();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
-        }
+    }
 
-public MapFragment() {
+    public MapFragment() {
         // Required empty public constructor
-        }
+    }
 
-// TODO: Rename and change types and number of parameters
+    // TODO: Rename and change types and number of parameters
     public static MapFragment newInstance() {
         MapFragment fragment = new MapFragment();
         return fragment;
@@ -87,6 +91,18 @@ public MapFragment() {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
     }
 
     @Override
@@ -126,11 +142,11 @@ public MapFragment() {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng hcmus = new LatLng(10.762963, 106.682394);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hcmus, 18));
-        originMarkers.add(mMap.addMarker(new MarkerOptions()
-                .title("Đại học Khoa học tự nhiên")
-                .position(hcmus)));
+        buildGoogleApiClient();
+        Location location = LocationUtils.getLastKnownLoaction(false, getActivity());
+        if (location != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LocationUtils.getLatLng(location), 18));
+        }
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -142,7 +158,6 @@ public MapFragment() {
             return;
         }
         mMap.setMyLocationEnabled(true);
-
     }
 
     @Override
@@ -162,9 +177,20 @@ public MapFragment() {
         }
 
         if (polylinePaths != null) {
-            for (Polyline polyline:polylinePaths ) {
+            for (Polyline polyline : polylinePaths) {
                 polyline.remove();
             }
+        }
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
         }
     }
 
@@ -193,4 +219,53 @@ public MapFragment() {
     }
 
 
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        L.Toast(connectionResult.getErrorMessage());
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LocationUtils.getLatLng(mLastLocation), 18));
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        L.Toast(i + "");
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if(location != null){
+            currentAddress = Double.toString(location.getLatitude()) + "," + Double.toString(location.getLongitude());
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
 }
