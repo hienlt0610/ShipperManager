@@ -8,18 +8,24 @@ public class Order {
     private String address;
     private double lat;
     private double lng;
+    private int time;
     private boolean status;
+    private String nameSender;
+    private String nameReceiver;
     private String userID;
 
-    public Order(String address, double lat, double lng, boolean status, String userID) {
+    public Order() {
+    }
+
+    public Order(String address, double lat, double lng, int time, boolean status, String nameSender, String nameReceiver, String userID) {
         this.address = address;
         this.lat = lat;
         this.lng = lng;
+        this.time = time;
         this.status = status;
+        this.nameSender = nameSender;
+        this.nameReceiver = nameReceiver;
         this.userID = userID;
-    }
-
-    public Order() {
     }
 
     public String getAddress() {
@@ -46,12 +52,36 @@ public class Order {
         this.lng = lng;
     }
 
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
     public boolean isStatus() {
         return status;
     }
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public String getNameSender() {
+        return nameSender;
+    }
+
+    public void setNameSender(String nameSender) {
+        this.nameSender = nameSender;
+    }
+
+    public String getNameReceiver() {
+        return nameReceiver;
+    }
+
+    public void setNameReceiver(String nameReceiver) {
+        this.nameReceiver = nameReceiver;
     }
 
     public String getUserID() {
