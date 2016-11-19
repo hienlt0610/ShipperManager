@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 android {
-    compileSdkVersion 24
+    compileSdkVersion 23
     buildToolsVersion '25.0.0'
 
     defaultConfig {
@@ -38,6 +38,7 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.google.android.gms:play-services-maps:9.8.0'
     compile 'com.google.android.gms:play-services-location:9.8.0'
+    compile 'com.google.android.gms:play-services-places:9.8.0'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
 }
