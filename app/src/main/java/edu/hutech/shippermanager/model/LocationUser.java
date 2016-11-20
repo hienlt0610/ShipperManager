@@ -9,8 +9,17 @@ public class LocationUser {
     private double lng;
     private long lastTime;
     private String userId;
+    private boolean statusOrder;
 
     public LocationUser() {
+    }
+
+    public LocationUser(double lat, double lng, long lastTime, String userId, boolean statusOrder) {
+        this.lat = lat;
+        this.lng = lng;
+        this.lastTime = lastTime;
+        this.userId = userId;
+        this.statusOrder = statusOrder;
     }
 
     public double getLat() {
@@ -45,12 +54,12 @@ public class LocationUser {
         this.userId = userId;
     }
 
-    public LocationUser(double lat, double lng, long lastTime, String userId) {
-        this.lat = lat;
-        this.lng = lng;
-        this.lastTime = lastTime;
-        this.userId = userId;
+    public boolean isStatusOrder() {
+        return statusOrder;
+    }
 
+    public void setStatusOrder(boolean statusOrder) {
+        this.statusOrder = statusOrder;
     }
 }
 
