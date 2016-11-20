@@ -46,6 +46,9 @@ public class HomeFragment extends BaseFragment{
         super.onViewCreated(view, savedInstanceState);
         DatabaseReference root = FirebaseDatabase.getInstance().getReference(FirebaseConfig.USERS_CHILD);
         fUser = FirebaseAuth.getInstance().getCurrentUser();
+//        DatabaseReference demo = FirebaseDatabase.getInstance().getReference();
+//        Order order = new Order("475 dien bien phu", 10.801147, 106.710624, 187, true, "Nhat Hoang", "Hien Le", fUser.getEmail());
+//        demo.child("orders").push().setValue(order);
         if(fUser != null){
             root.child(fUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

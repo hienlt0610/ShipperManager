@@ -201,4 +201,5 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }
