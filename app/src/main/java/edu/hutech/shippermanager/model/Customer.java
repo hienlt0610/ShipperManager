@@ -9,17 +9,17 @@ public class Customer {
     private String fullName;
     private double lat;
     private double lng;
-    private String phoneNumber;
+    private String phone;
 
     public Customer() {
     }
 
-    public Customer(String address, String fullName, double lat, double lng, String phoneNumber) {
+    public Customer(String address, String fullName, double lat, double lng, String phone) {
         this.address = address;
         this.fullName = fullName;
         this.lat = lat;
         this.lng = lng;
-        this.phoneNumber = phoneNumber;
+        this.phone = phone;
     }
 
     public String getAddress() {
@@ -54,12 +54,12 @@ public class Customer {
         this.lng = lng;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class Customer {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("{address: "+this.address);
         stringBuilder.append(" ,fullName: "+this.fullName);
-        stringBuilder.append(" ,phoneNumber: "+this.phoneNumber);
+        stringBuilder.append(" ,phoneNumber: "+this.phone);
         stringBuilder.append(" ,lat: "+this.lat);
         stringBuilder.append(" ,lng: "+this.lng).append("}");
         return stringBuilder.toString();
