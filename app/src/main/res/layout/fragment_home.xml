@@ -66,11 +66,12 @@
                 android:background="#f2f2f2"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"/>
-            <TextView
+            <ListView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                android:text="Hiện không có đơn hàng nào !!!"/>
+                android:text="Hiện không có đơn hàng nào !!!"
+                android:id="@+id/listViewOrders"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
