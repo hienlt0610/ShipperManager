@@ -10,6 +10,7 @@ public class LocationUser {
     private long lastTime;
     private String userId;
     private boolean statusOrder;
+    private Order order;
 
     public LocationUser() {
     }
@@ -60,6 +61,14 @@ public class LocationUser {
 
     public void setStatusOrder(boolean statusOrder) {
         this.statusOrder = statusOrder;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }
 

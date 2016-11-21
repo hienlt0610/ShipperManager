@@ -5,59 +5,41 @@ package edu.hutech.shippermanager.model;
  */
 
 public class Order {
-    private String address;
-    private double lat;
-    private double lng;
-    private int time;
+    private Customer sender;
+    private Customer receiver;
     private boolean status;
-    private String nameSender;
-    private String nameReceiver;
+    private long time;
+    private long totalPrice;
     private String userID;
+    private String orderID;
+    private User user;
 
     public Order() {
     }
 
-    public Order(String address, double lat, double lng, int time, boolean status, String nameSender, String nameReceiver, String userID) {
-        this.address = address;
-        this.lat = lat;
-        this.lng = lng;
-        this.time = time;
+    public Order(Customer sender, Customer receiver, boolean status, long time, long totalPrice, String userID) {
+        this.sender = sender;
+        this.receiver = receiver;
         this.status = status;
-        this.nameSender = nameSender;
-        this.nameReceiver = nameReceiver;
+        this.time = time;
+        this.totalPrice = totalPrice;
         this.userID = userID;
     }
 
-    public String getAddress() {
-        return address;
+    public Customer getSender() {
+        return sender;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setSender(Customer sender) {
+        this.sender = sender;
     }
 
-    public double getLat() {
-        return lat;
+    public Customer getReceiver() {
+        return receiver;
     }
 
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public double getLng() {
-        return lng;
-    }
-
-    public void setLng(double lng) {
-        this.lng = lng;
-    }
-
-    public int getTime() {
-        return time;
-    }
-
-    public void setTime(int time) {
-        this.time = time;
+    public void setReceiver(Customer receiver) {
+        this.receiver = receiver;
     }
 
     public boolean isStatus() {
@@ -68,20 +50,20 @@ public class Order {
         this.status = status;
     }
 
-    public String getNameSender() {
-        return nameSender;
+    public long getTime() {
+        return time;
     }
 
-    public void setNameSender(String nameSender) {
-        this.nameSender = nameSender;
+    public void setTime(long time) {
+        this.time = time;
     }
 
-    public String getNameReceiver() {
-        return nameReceiver;
+    public long getTotalPrice() {
+        return totalPrice;
     }
 
-    public void setNameReceiver(String nameReceiver) {
-        this.nameReceiver = nameReceiver;
+    public void setTotalPrice(long totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public String getUserID() {
@@ -90,5 +72,27 @@ public class Order {
 
     public void setUserID(String userID) {
         this.userID = userID;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        Order objOrder = ((Order) obj);
+        return this.getOrderID().trim().equalsIgnoreCase(objOrder.getOrderID().trim());
+    }
+
+    public String getOrderID() {
+        return orderID;
+    }
+
+    public void setOrderID(String orderID) {
+        this.orderID = orderID;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
