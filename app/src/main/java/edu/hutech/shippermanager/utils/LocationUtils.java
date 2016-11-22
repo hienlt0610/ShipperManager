@@ -85,4 +85,21 @@ public class LocationUtils {
         }
         return null;
     }
+
+    public static String locationString(Location location){
+        if(location == null) return "0,0";
+        StringBuilder builder = new StringBuilder();
+        builder.append(location.getLatitude());
+        builder.append(",");
+        builder.append(location.getLongitude());
+        return builder.toString();
+    }
+
+    public static String locationString(double lat, double lng){
+        StringBuilder builder = new StringBuilder();
+        builder.append(lat);
+        builder.append(",");
+        builder.append(lng);
+        return builder.toString();
+    }
 }

@@ -3,12 +3,15 @@ package edu.hutech.shippermanager.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import edu.hutech.shippermanager.R;
@@ -31,6 +34,27 @@ public class OrderAdapter extends ArrayAdapter<Order> {
 
     public void addOrderItem(Order order){
         this.orders.add(order);
+        Collections.sort(this.orders, new Comparator<Order>() {
+            @Override
+            public int compare(Order order, Order t1) {
+                if(order.isRunning() && !t1.isRunning()){
+                    return -1;
+                }
+                else if(!order.isRunning() && t1.isRunning()){
+                    return 1;
+                }
+                else{
+                    if(order.isStatus() && !t1.isStatus()){
+                        return 1;
+                    }else if(!order.isStatus() && t1.isStatus()){
+                        return -1;
+                    }
+                    else{
+                        return 0;
+                    }
+                }
+            }
+        });
         this.notifyDataSetChanged();
     }
 
@@ -64,7 +88,7 @@ public class OrderAdapter extends ArrayAdapter<Order> {
             holder = new ViewHolder();
             holder.tvDiaChi = (TextView) convertView.findViewById(R.id.tvDiaChi);
             holder.tvTinhTrang = (TextView) convertView.findViewById(R.id.tvTinhTrang);
-
+            holder.tvRunning = (TextView) convertView.findViewById(R.id.tvRunning);
             // store the holder with the view.
             convertView.setTag(holder);
 
@@ -75,8 +99,22 @@ public class OrderAdapter extends ArrayAdapter<Order> {
         }
         order = orders.get(position);
         holder.tvDiaChi.setText(order.getReceiver().getAddress());
-        String statusString = order.isStatus() ? "Da Giao" : "Chua giao";
+        String statusString;
+        int statusColor;
+        if(order.isStatus()){
+            statusString = "Đã giao";
+            statusColor = ContextCompat.getColor(context,R.color.order_status_success);
+        }else{
+            statusString = "Chưa giao";
+            statusColor = ContextCompat.getColor(context,R.color.order_status_unsuccess);
+        }
+
         holder.tvTinhTrang.setText(statusString);
+        holder.tvTinhTrang.setBackgroundColor(statusColor);
+        if(order.isRunning())
+            holder.tvRunning.setVisibility(View.VISIBLE);
+        else
+            holder.tvRunning.setVisibility(View.GONE);
 
         return convertView;
     }
@@ -84,6 +122,6 @@ public class OrderAdapter extends ArrayAdapter<Order> {
 
 
     public class ViewHolder{
-        TextView tvDiaChi, tvTinhTrang;
+        TextView tvDiaChi, tvTinhTrang,tvRunning;
     }
 }

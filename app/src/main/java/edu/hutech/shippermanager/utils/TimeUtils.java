@@ -1,5 +1,6 @@
 package edu.hutech.shippermanager.utils;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -100,6 +101,16 @@ public class TimeUtils {
         }
 
         return dateDT;
+    }
+
+    /**
+     * Parses number timestap second to date
+     * @param timeStampSecond timestamp in second unit
+     * @return
+     */
+    public static Date parseDate(long timeStampSecond){
+        Timestamp timestamp = new Timestamp(timeStampSecond*1000);
+        return new Date(timestamp.getTime());
     }
 
     /**
