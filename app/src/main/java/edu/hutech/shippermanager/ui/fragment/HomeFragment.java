@@ -89,16 +89,31 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
 
                 }
             });
+
             root.child("orders").addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Order order = dataSnapshot.getValue(Order.class);
+                    final Order order = dataSnapshot.getValue(Order.class);
                     order.setOrderID(dataSnapshot.getKey());
                     if (order == null) return;
                     if (order.getUserID().equals(fUser.getUid())) {
-                        //orders.add("Địa chỉ: " + order.getReceiver().getAddress() + "\nTình trạng: " + order.isStatus());
-                        //adapter.notifyDataSetChanged();
-                        adapter.addOrderItem(order);
+                        root.child("user_location").child(fUser.getUid()).child("orders").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Order runningOrder = dataSnapshot.getValue(Order.class);
+                                if(runningOrder != null && runningOrder.getOrderID().equals(order.getOrderID())){
+                                    order.setRunning(true);
+                                }else{
+                                    order.setRunning(false);
+                                }
+                                adapter.addOrderItem(order);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                 }
 
@@ -139,10 +154,28 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
         final Order order = orders.get(pos);
 
         //Creating the instance of PopupMenu
-        PopupMenu popup = new PopupMenu(getActivity(), view);
+        final PopupMenu popup = new PopupMenu(getActivity(), view);
         //Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.poupup_menu, popup.getMenu());
 
+        DatabaseReference userLocationRef = root.child("user_location");
+        DatabaseReference userLocationItem = userLocationRef.child(fUser.getUid());
+        userLocationItem.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild("orders") || order.isStatus()) {
+                    popup.getMenu().findItem(R.id.menu_act_run_order).setVisible(false);
+                }else{
+                    popup.getMenu().findItem(R.id.menu_act_run_order).setVisible(true);
+                }
+                popup.show();//showing popup menu
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         //registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
@@ -162,8 +195,6 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                 return true;
             }
         });
-
-        popup.show();//showing popup menu
     }
 
 

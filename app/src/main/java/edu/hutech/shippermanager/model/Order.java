@@ -13,6 +13,7 @@ public class Order {
     private String userID;
     private String orderID;
     private User user;
+    private boolean isRunning;
 
     public Order() {
     }
@@ -94,5 +95,13 @@ public class Order {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public void setRunning(boolean running) {
+        isRunning = running;
     }
 }

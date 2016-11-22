@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:text="Đang chạy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvRunning"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="#F44336"
+        android:textColor="#ffffff"
+        android:padding="5dp"/>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp">
+        android:padding="5dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
         <TextView
             android:id="@+id/tvDiaChi"
             android:layout_width="wrap_content"
@@ -17,6 +34,9 @@
             android:id="@+id/tvTinhTrang"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dia Chi: "/>
+            android:text="Đã giao"
+            android:background="@color/order_status_success"
+            android:textColor="#ffffff"
+            android:padding="2dp"/>
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>
