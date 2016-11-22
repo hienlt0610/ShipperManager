@@ -44,6 +44,7 @@ dependencies {
     compile "com.google.android.gms:play-services-location:${googlePlayVer}"
     compile "com.google.firebase:firebase-messaging:${googlePlayVer}"
     compile 'com.google.android.gms:play-services-places:9.8.0'
+    compile 'com.akexorcist:googledirectionlibrary:1.0.4'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
 }
