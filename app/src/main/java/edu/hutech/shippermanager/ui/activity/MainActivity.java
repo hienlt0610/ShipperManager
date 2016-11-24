@@ -70,6 +70,7 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
         tvFullName = (TextView) viewHeader.findViewById(R.id.tvFullName);
         tvEmail = (TextView) viewHeader.findViewById(R.id.tvEmail);
         userChild = FirebaseDatabase.getInstance().getReference(FirebaseConfig.USERS_CHILD);
+
         requestPermisstion();
     }
 
@@ -79,6 +80,7 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
                 Manifest.permission.ACCESS_NETWORK_STATE,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.SYSTEM_ALERT_WINDOW
         });
     }
 

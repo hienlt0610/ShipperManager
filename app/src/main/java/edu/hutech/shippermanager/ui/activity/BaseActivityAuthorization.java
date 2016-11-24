@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * Created by hienl on 11/4/2016.
@@ -25,8 +26,10 @@ public abstract class BaseActivityAuthorization extends BaseActivity implements 
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user != null) {
             onAuthentication(firebaseAuth);
+            FirebaseMessaging.getInstance().subscribeToTopic("global");
         }else{
             onAuthError();
+            FirebaseMessaging.getInstance().unsubscribeFromTopic("global");
         }
     }
 
