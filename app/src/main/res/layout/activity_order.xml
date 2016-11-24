@@ -25,7 +25,7 @@
             app:cardElevation="2dp"
             app:cardUseCompatPadding="true">
             <TextView
-                android:text="Thời gian"
+                android:text="Thời gian: Không xác định"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
@@ -51,7 +51,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Giao trong vòng 45'"
+                    android:text="Thời gian giao: Không xác định"
                     android:textSize="14sp"
                     android:id="@+id/tvComment" />
             </LinearLayout>
@@ -67,16 +67,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="10dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="38 nguyễn xí - phường 26...."
+                    android:text="Không xác định"
                     android:textSize="14sp"
                     android:id="@+id/tvSenderAddress" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="38 nguyễn xí - phường 26...."
+                    android:text="Không xác định"
                     android:textSize="14sp"
                     android:id="@+id/tvReceiverAddress" />
             </LinearLayout>
@@ -87,8 +89,9 @@
             android:layout_height="wrap_content"
             app:cardElevation="2dp"
             app:cardUseCompatPadding="true">
+
             <TextView
-                android:text="Khoảng cách: 12KM"
+                android:text="Khoảng cách: Không xác định"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -101,7 +104,7 @@
             app:cardElevation="2dp"
             app:cardUseCompatPadding="true">
             <TextView
-                android:text="Giá trị đơn hàng: 120.000đ"
+                android:text="Giá trị đơn hàng: Không xác định"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -136,13 +139,13 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Trần Văn A"
+                        android:text="Không xác định"
                         android:textSize="14sp"
                         android:id="@+id/tvReceiverName" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="(84) 1207774140"
+                        android:text="Không xác định"
                         android:textSize="14sp"
                         android:id="@+id/tvReceiverPhone" />
                 </LinearLayout>

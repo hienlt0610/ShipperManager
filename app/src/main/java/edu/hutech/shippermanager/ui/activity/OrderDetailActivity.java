@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.akexorcist.googledirection.DirectionCallback;
 import com.akexorcist.googledirection.GoogleDirection;
@@ -131,7 +132,6 @@ public class OrderDetailActivity extends BaseActivityAuthorization implements Va
         }
         tvSenderAddress.setText("Nơi nhận: " + order.getSender().getAddress());
         tvReceiverAddress.setText("Nơi giao: " + order.getReceiver().getAddress());
-        tvDistance.setText("Khoảng cách: 12Km");
         tvTotalPrice.setText("Tổng tiền thu: " + String.format("%,d", order.getTotalPrice()) + "đ");
         tvReceiverName.setText(order.getReceiver().getFullName());
         tvReceiverPhone.setText(order.getReceiver().getPhone());
@@ -221,6 +221,7 @@ public class OrderDetailActivity extends BaseActivityAuthorization implements Va
 
     @Override
     public void onDirectionSuccess(Direction direction, String rawBody) {
+        Toast.makeText(this, "Test222", Toast.LENGTH_SHORT).show();
         if(direction.isOK()){
             Route route = direction.getRouteList().get(0);
             Leg leg = route.getLegList().get(0);
