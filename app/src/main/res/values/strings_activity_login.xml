@@ -1,8 +1,8 @@
 <resources>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Login</string>
+    <string name="prompt_password">Mật khẩu</string>
+    <string name="action_sign_in">Đăng nhập</string>
     <string name="invalid_email">This email address is invalid</string>
     <string name="invalid_password">Password is too short</string>
     <string name="incorrect_password">Password is incorrect</string>

@@ -7,4 +7,7 @@
     <color name="black_alpha_40">#66000000</color>
     <color name="order_status_success">#689F38</color>
     <color name="order_status_unsuccess">#FF5252</color>
+    <color name="login_background">#369DE2</color>
+    <color name="login_button_background">#1D84C9</color>
+    <color name="login_button_pressed_background">#1975B3</color>
 </resources>

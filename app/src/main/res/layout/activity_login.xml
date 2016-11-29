@@ -4,7 +4,7 @@
     android:id="@+id/activity_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00CD66"
+    android:background="@color/login_background"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:gravity="center_vertical|center_horizontal"
@@ -13,7 +13,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="edu.hutech.shippermanager.LoginActivity">
+    tools:context="edu.hutech.shippermanager.ui.activity.LoginActivity">
 
 
     <LinearLayout
@@ -26,12 +26,25 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="Shipper Manager"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#ffffff"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:layout_above="@+id/ll1"
+        android:layout_centerHorizontal="true" />
+
     <LinearLayout
         android:id="@+id/ll2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical|center_horizontal"
-        android:layout_alignTop="@+id/ll1"
+        android:layout_below="@+id/textView2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
@@ -50,7 +63,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp">
 
                 <LinearLayout
                     android:id="@+id/email_login_form"
@@ -67,8 +82,9 @@
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:textColor="#ffffffff"
-                        android:textColorHint="#ffffffff" />
+                        android:textColor="#9E9E9E"
+                        android:textColorHint="#dddddd"
+                        android:background="@drawable/edt_background_white" />
 
                     <EditText
                         android:id="@+id/editTextPassword"
@@ -81,8 +97,9 @@
                         android:inputType="textPassword"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:textColor="#ffffffff"
-                        android:textColorHint="#ffffffff" />
+                        android:background="@drawable/edt_background_white"
+                        android:textColor="#9E9E9E"
+                        android:textColorHint="#dddddd" />
 
                     <Button
                         android:id="@+id/buttonLogin"
@@ -90,26 +107,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:background="#F0F8FF"
+                        android:background="@drawable/login_button_background"
                         android:text="@string/action_sign_in"
-                        android:textColor="#00CD66"
+                        android:textColor="#FFFFFF"
                         android:textStyle="bold" />
 
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:text="Shipper Manager"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#ffffffff"
-        android:textSize="30dp"
-        android:layout_above="@+id/ll1"
-        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -29,6 +29,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCsDw_v8GIsJcDVWHijIvDVZYc5wjZjIbc" />
+        <meta-data
+            android:name="edu.hutech.shippermanager.common.SimpleGlideModule"
+            android:value="GlideModule"/>
 
         <activity
             android:name=".ui.activity.MainActivity"
