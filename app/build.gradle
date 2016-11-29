@@ -37,6 +37,7 @@ dependencies {
     compile "com.google.firebase:firebase-core:${googlePlayVer}"
     compile "com.google.firebase:firebase-auth:${googlePlayVer}"
     compile "com.google.firebase:firebase-database:${googlePlayVer}"
+    compile "com.google.firebase:firebase-storage:${googlePlayVer}"
     compile "com.android.support:design:${supportLibVer}"
     compile "com.android.support:support-v4:${supportLibVer}"
     compile 'org.greenrobot:eventbus:3.0.0'
@@ -46,6 +47,7 @@ dependencies {
     compile "com.google.android.gms:play-services-places:9.8.0"
     compile 'com.akexorcist:googledirectionlibrary:1.0.4'
     compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
     testCompile 'junit:junit:4.12'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
 }

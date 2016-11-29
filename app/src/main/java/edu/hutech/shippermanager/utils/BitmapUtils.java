@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+
 /**
  * Created by hienl on 11/4/2016.
  */
@@ -89,6 +90,10 @@ public class BitmapUtils {
         return inputstream;
     }
 
+    public static Bitmap inputStreamToBitmap(InputStream stream){
+        return BitmapFactory.decodeStream(stream);
+    }
+
     public static Bitmap screenshot(View view, Rect clipRect) {
         Bitmap bitmap = Bitmap.createBitmap(clipRect.width(), clipRect.height(),
                 Bitmap.Config.ARGB_8888);
@@ -141,7 +146,7 @@ public class BitmapUtils {
      * @param newWidth Width of resized bitmap
      * @param newHeight Height of the resized bitmap
      **/
-    public static Bitmap resizeImage(Bitmap sourceBitmap, int newWidth, int newHeight, boolean filter) {
+    public static Bitmap resizeNewSizeImage(Bitmap sourceBitmap, int newWidth, int newHeight) {
         // TODO: move this method to ImageUtils
         if (sourceBitmap == null) {
             throw new NullPointerException("Bitmap to be resized cannot be null");
@@ -252,5 +257,44 @@ public class BitmapUtils {
         canvas.drawBitmap(bmp, 0, 0, paint);
 
         return ret;
+    }
+
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+        final float totalPixels = width * height;
+        final float totalReqPixelsCap = reqWidth * reqHeight * 2;
+        while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
+            inSampleSize++;
+        }
+        return inSampleSize;
+    }
+
+    public static Bitmap compressImage(Bitmap image, int maxWidth, int maxHeight) {
+        if (maxHeight > 0 && maxWidth > 0) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            float ratioBitmap = (float) width / (float) height;
+            float ratioMax = (float) maxWidth / (float) maxHeight;
+
+            int finalWidth = maxWidth;
+            int finalHeight = maxHeight;
+            if (ratioMax > 1) {
+                finalWidth = (int) ((float)maxHeight * ratioBitmap);
+            } else {
+                finalHeight = (int) ((float)maxWidth / ratioBitmap);
+            }
+            image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
+            return image;
+        } else {
+            return image;
+        }
     }
 }

@@ -11,5 +11,7 @@ public class FirebaseConfig {
     public static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?";
     public static final String GOOGLE_API_KEY = "AIzaSyCsDw_v8GIsJcDVWHijIvDVZYc5wjZjIbc";
 
+    public static final String FIREBASE_STORAGE_URL = "gs://shippermanager-9752c.appspot.com";
+
     public static final String TOPIC_USER = "topic%users";
 }

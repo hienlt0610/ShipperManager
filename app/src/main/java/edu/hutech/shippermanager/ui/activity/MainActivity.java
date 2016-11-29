@@ -12,8 +12,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -50,6 +52,7 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
     NavigationView navigationView;
     View viewHeader;
     TextView tvFullName, tvEmail;
+    ImageView imgProfile;
 
 
     @Override
@@ -69,6 +72,7 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
         viewHeader = navigationView.getHeaderView(0);
         tvFullName = (TextView) viewHeader.findViewById(R.id.tvFullName);
         tvEmail = (TextView) viewHeader.findViewById(R.id.tvEmail);
+        imgProfile = ((ImageView) viewHeader.findViewById(R.id.imgProfile));
         userChild = FirebaseDatabase.getInstance().getReference(FirebaseConfig.USERS_CHILD);
 
         requestPermisstion();
@@ -125,6 +129,7 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
                 }else{
                     tvEmail.setText(mUser.getEmail());
                     tvFullName.setText(user.getFullName());
+                    Glide.with(MainActivity.this).load(user.getProfilePicture()).into(imgProfile);
                 }
             }
 

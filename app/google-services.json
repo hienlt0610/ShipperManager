@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "963146518221-6m35fkb01jom4nsbg7fqp8j2ghmm1cme.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.hutech.shippermanager",
+            "certificate_hash": "029AA0B74CB718D08DF50FC4025B03C28401E565"
+          }
+        },
+        {
           "client_id": "963146518221-l0hpc74uvsr2cp7b2a9534fpasu89k74.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "963146518221-l0hpc74uvsr2cp7b2a9534fpasu89k74.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
