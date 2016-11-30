@@ -23,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -53,6 +54,9 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Dir
     private Location mLastLocation;
     private LocationManager locationManager;
     private String currentAddress;
+    private boolean isDirectEnable = false;
+    private LatLng directLatLng;
+    private String directAddress;
 
     @BindView(R.id.editTextAddress)
     EditText edtAddress;
@@ -83,8 +87,13 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Dir
     }
 
     // TODO: Rename and change types and number of parameters
-    public static MapFragment newInstance() {
+    public static MapFragment newInstance(double lat, double lng, String address) {
         MapFragment fragment = new MapFragment();
+        Bundle bundle = new Bundle();
+        bundle.putDouble("lat", lat);
+        bundle.putDouble("lng", lng);
+        bundle.putString("address",address);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -111,6 +120,17 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Dir
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapView);
         mapFragment.getMapAsync(this);
         setupLocationButton();
+
+        if (getArguments() != null) {
+            Bundle bundle = getArguments();
+            double lat = bundle.getDouble("lat");
+            double lng = bundle.getDouble("lng");
+            directAddress = bundle.getString("address");
+//            L.Toast("Da nhan duoc vi tri tu order detail: "+lat +" - "+lng);
+            //directMap(lat, lng);
+            isDirectEnable = true;
+            directLatLng = new LatLng(lat, lng);
+        }
     }
 
     private void setupLocationButton() {
@@ -242,6 +262,16 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Dir
         }
     }
 
+    public void directMap(double lat, double lng) {
+        String noiden = Double.toString(lat) + "," + Double.toString(lng);
+        //L.Toast(currentAddress);
+        try {
+            new DirectionFinder(getActivity(), this, currentAddress, noiden).execute();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onConnectionSuspended(int i) {
         L.Toast(i + "");
@@ -249,8 +279,13 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Dir
 
     @Override
     public void onLocationChanged(Location location) {
-        if(location != null){
+        if (location != null) {
             currentAddress = Double.toString(location.getLatitude()) + "," + Double.toString(location.getLongitude());
+            if (isDirectEnable) {
+                edtAddress.setText(directAddress);
+                directMap(directLatLng.latitude, directLatLng.longitude);
+                isDirectEnable = false;
+            }
         }
     }
 

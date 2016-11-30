@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.akexorcist.googledirection.DirectionCallback;
 import com.akexorcist.googledirection.GoogleDirection;
@@ -43,7 +42,7 @@ import edu.hutech.shippermanager.common.L;
 import edu.hutech.shippermanager.model.Order;
 import edu.hutech.shippermanager.utils.TimeUtils;
 
-public class OrderDetailActivity extends BaseActivityAuthorization implements ValueEventListener, LocationListener,DirectionCallback {
+public class OrderDetailActivity extends BaseActivityAuthorization implements ValueEventListener, LocationListener, DirectionCallback {
 
     @BindView(R.id.tvTime)
     TextView tvTime;
@@ -92,6 +91,26 @@ public class OrderDetailActivity extends BaseActivityAuthorization implements Va
         setTitle("Thông tin đơn đặt hàng");
         itemOrderRef = FirebaseDatabase.getInstance().getReference("orders").child(orderID);
         itemOrderRef.addValueEventListener(this);
+        FirebaseDatabase.getInstance().getReference("user_location").child(getFireBaseAuth().getCurrentUser().getUid())
+                .child("orders")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Order order = dataSnapshot.getValue(Order.class);
+                if(order != null){
+                    if(order.getOrderID().equals(orderID))
+                        btnFinish.setVisibility(View.VISIBLE);
+                    else
+                        btnFinish.setVisibility(View.INVISIBLE);
+                }else
+                    btnFinish.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void initLocation() {
@@ -158,8 +177,21 @@ public class OrderDetailActivity extends BaseActivityAuthorization implements Va
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnDirection:
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setAction(MainActivity.FRAGMENT_MAP);
+                intent.putExtra("lat", currOrder.getReceiver().getLat());
+                intent.putExtra("lng", currOrder.getReceiver().getLng());
+                intent.putExtra("address", currOrder.getReceiver().getAddress());
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 break;
             case R.id.btnFinish:
+                itemOrderRef.child("status").setValue(true);
+                FirebaseDatabase.getInstance().getReference("user_location")
+                        .child(getFireBaseAuth()
+                        .getCurrentUser()
+                        .getUid()).child("orders").removeValue();
+                this.finish();
                 break;
         }
     }
@@ -196,8 +228,8 @@ public class OrderDetailActivity extends BaseActivityAuthorization implements Va
 
     private void updateOrderLocationDetail(Location location) {
         GoogleDirection.withServerKey(Config.GOOGLE_MAP_API_KEY)
-                .from(new LatLng(location.getLatitude(),location.getLongitude()))
-                .to(new LatLng(currOrder.getReceiver().getLat(),currOrder.getReceiver().getLng()))
+                .from(new LatLng(location.getLatitude(), location.getLongitude()))
+                .to(new LatLng(currOrder.getReceiver().getLat(), currOrder.getReceiver().getLng()))
                 .avoid(AvoidType.FERRIES)
                 .avoid(AvoidType.HIGHWAYS)
                 .language(Language.VIETNAMESE)
@@ -221,13 +253,12 @@ public class OrderDetailActivity extends BaseActivityAuthorization implements Va
 
     @Override
     public void onDirectionSuccess(Direction direction, String rawBody) {
-        Toast.makeText(this, "Test222", Toast.LENGTH_SHORT).show();
-        if(direction.isOK()){
+        if (direction.isOK()) {
             Route route = direction.getRouteList().get(0);
             Leg leg = route.getLegList().get(0);
-            tvDistance.setText("Khoảng cách: "+leg.getDistance().getText());
-            tvComment.setText("Thời gian giao dự tính: "+leg.getDuration().getText());
-        }else{
+            tvDistance.setText("Khoảng cách: " + leg.getDistance().getText());
+            tvComment.setText("Thời gian giao dự tính: " + leg.getDuration().getText());
+        } else {
             tvDistance.setText("Khoảng cách: Không xác định");
             tvComment.setText("Thời gian giao dự tính không xác định");
         }
@@ -238,4 +269,5 @@ public class OrderDetailActivity extends BaseActivityAuthorization implements Va
         tvDistance.setText("Khoảng cách: Không xác định");
         tvComment.setText("Thời gian giao dự tính không xác định");
     }
+
 }

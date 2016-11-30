@@ -126,14 +126,30 @@ public class ProfileActivity extends BaseActivityAuthorization {
                     Toast.makeText(this, "Vui lòng nhập số điện thoại", Toast.LENGTH_SHORT).show();
                     return false;
                 }
-                User user = new User();
-                user.setFullName(edtFullName.getText().toString());
-                user.setPhone(edtPhone.getText().toString());
-                user.setProfilePicture(null);
-                user.setEmail(fUser.getEmail());
-                rootFire.child(fUser.getUid()).setValue(user);
-                Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
-                this.finish();
+//                User user = new User();
+//                user.setFullName(edtFullName.getText().toString());
+//                user.setPhone(edtPhone.getText().toString());
+//                user.setEmail(fUser.getEmail());
+//                rootFire.child(fUser.getUid()).setValue(user);
+//                Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+//                this.finish();
+                FirebaseDatabase.getInstance().getReference("users").child(fUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        user.setFullName(edtFullName.getText().toString());
+                        user.setPhone(edtPhone.getText().toString());
+                        user.setEmail(fUser.getEmail());
+                        rootFire.child(fUser.getUid()).setValue(user);
+                        Toast.makeText(ProfileActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                        ProfileActivity.this.finish();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
                 break;
             case android.R.id.home:
                 this.finish();

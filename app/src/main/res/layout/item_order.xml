@@ -4,19 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:text="Đang chạy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvRunning"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:background="#F44336"
-        android:textColor="#ffffff"
-        android:padding="5dp"/>
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -35,8 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Đã giao"
-            android:background="@color/order_status_success"
-            android:textColor="#ffffff"
-            android:padding="2dp"/>
+            android:background="@drawable/order_status_success_background"
+            android:textColor="#ffffff"/>
     </LinearLayout>
 </RelativeLayout>

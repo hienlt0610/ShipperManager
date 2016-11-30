@@ -3,7 +3,6 @@ package edu.hutech.shippermanager.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,7 +87,6 @@ public class OrderAdapter extends ArrayAdapter<Order> {
             holder = new ViewHolder();
             holder.tvDiaChi = (TextView) convertView.findViewById(R.id.tvDiaChi);
             holder.tvTinhTrang = (TextView) convertView.findViewById(R.id.tvTinhTrang);
-            holder.tvRunning = (TextView) convertView.findViewById(R.id.tvRunning);
             // store the holder with the view.
             convertView.setTag(holder);
 
@@ -103,25 +101,24 @@ public class OrderAdapter extends ArrayAdapter<Order> {
         int statusColor;
         if(order.isStatus()){
             statusString = "Đã giao";
-            statusColor = ContextCompat.getColor(context,R.color.order_status_success);
+            statusColor = R.drawable.order_status_success_background;
+        }
+        else if(order.isRunning()){
+            statusString = "Đang chạy";
+            statusColor = R.drawable.order_status_running;
         }else{
             statusString = "Chưa giao";
-            statusColor = ContextCompat.getColor(context,R.color.order_status_unsuccess);
+            statusColor = R.drawable.order_status_unsuccess;
         }
 
         holder.tvTinhTrang.setText(statusString);
-        holder.tvTinhTrang.setBackgroundColor(statusColor);
-        if(order.isRunning())
-            holder.tvRunning.setVisibility(View.VISIBLE);
-        else
-            holder.tvRunning.setVisibility(View.GONE);
-
+        holder.tvTinhTrang.setBackgroundResource(statusColor);
         return convertView;
     }
 
 
 
     public class ViewHolder{
-        TextView tvDiaChi, tvTinhTrang,tvRunning;
+        TextView tvDiaChi, tvTinhTrang;
     }
 }

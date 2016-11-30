@@ -104,6 +104,12 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
             if(StringUtils.isNotEmpty(action)) {
                 if(action.equals(FRAGMENT_MAP)){
                     defaultFragment = new MapFragment();
+                    if(intent.hasExtra("lat") && intent.hasExtra("lng")){
+                        double lat = intent.getDoubleExtra("lat",0);
+                        double lng = intent.getDoubleExtra("lng",0);
+                        String address = intent.getStringExtra("address");
+                        defaultFragment = MapFragment.newInstance(lat, lng, address);
+                    }
                 }
                 else if(action.equals(FRAGMENT_TRACKER)){
                     defaultFragment = new TrackingFragment();
@@ -111,6 +117,7 @@ public class MainActivity extends BaseActivityAuthorization implements Navigatio
             }
         }
         FragmentUtils.replaceFragment(R.id.flContent,getSupportFragmentManager(), defaultFragment);
+
     }
 
     private void checkProfile() {

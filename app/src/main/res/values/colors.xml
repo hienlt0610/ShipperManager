@@ -10,4 +10,5 @@
     <color name="login_background">#369DE2</color>
     <color name="login_button_background">#1D84C9</color>
     <color name="login_button_pressed_background">#1975B3</color>
+    <color name="order_status_running">#FFC30F</color>
 </resources>
