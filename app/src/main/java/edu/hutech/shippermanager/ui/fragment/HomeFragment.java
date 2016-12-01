@@ -182,14 +182,15 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                 int id = item.getItemId();
                 switch (id) {
                     case R.id.menu_act_view_info:
-                        Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
-                        intent.putExtra("orderID", order.getOrderID());
-                        startActivity(intent);
-                        break;
+                    Intent intent = new Intent(getActivity(), OrderDetailActivity.class);
+                    intent.putExtra("orderID", order.getOrderID());
+                    startActivity(intent);
+                    break;
                     case R.id.menu_act_run_order:
                         DatabaseReference uLocationItem = root.child("user_location").child(fUser.getUid());
                         uLocationItem.child("orders").setValue(order);
-
+                        order.setRunning(true);
+                        adapter.notifyDataSetChanged();
                         break;
                 }
                 return true;
