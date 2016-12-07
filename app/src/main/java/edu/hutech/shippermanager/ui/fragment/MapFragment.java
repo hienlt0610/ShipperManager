@@ -16,6 +16,15 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.akexorcist.googledirection.DirectionCallback;
+import com.akexorcist.googledirection.GoogleDirection;
+import com.akexorcist.googledirection.constant.AvoidType;
+import com.akexorcist.googledirection.constant.Language;
+import com.akexorcist.googledirection.constant.TransportMode;
+import com.akexorcist.googledirection.model.Direction;
+import com.akexorcist.googledirection.model.Leg;
+import com.akexorcist.googledirection.model.Route;
+import com.akexorcist.googledirection.util.DirectionConverter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -23,40 +32,37 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import edu.hutech.shippermanager.R;
 import edu.hutech.shippermanager.common.L;
-import edu.hutech.shippermanager.model.Routes;
-import edu.hutech.shippermanager.service.DirectionFinder;
-import edu.hutech.shippermanager.service.DirectionFinderListener;
 import edu.hutech.shippermanager.utils.LocationUtils;
 
+import static edu.hutech.shippermanager.common.Config.GOOGLE_MAP_API_KEY;
 
-public class MapFragment extends BaseFragment implements OnMapReadyCallback, DirectionFinderListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+
+public class MapFragment extends BaseFragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, DirectionCallback {
 
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
-    private List<Marker> originMarkers = new ArrayList<>();
-    private List<Marker> destinationMarkers = new ArrayList<>();
-    private List<Polyline> polylinePaths = new ArrayList<>();
+    //    private List<Marker> originMarkers = new ArrayList<>();
+//    private List<Marker> destinationMarkers = new ArrayList<>();
+//    private List<Polyline> polylinePaths = new ArrayList<>();
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private LocationManager locationManager;
-    private String currentAddress;
+    //private String currentAddress;
     private boolean isDirectEnable = false;
     private LatLng directLatLng;
     private String directAddress;
+    private LatLng getCurrentLatLng;
 
     @BindView(R.id.editTextAddress)
     EditText edtAddress;
@@ -64,23 +70,36 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Dir
     TextView tvDistance;
 
     @OnClick(R.id.buttonFindPath)
-
     public void FindPath(View view) {
-        sendRequest();
+        //sendRequest();
+        if (mMap != null)
+            mMap.clear();
+        googleDirection(directLatLng);
     }
 
-    private void sendRequest() {
-        String address = edtAddress.getText().toString();
-        if (address.isEmpty()) {
-            L.Toast("Vui lòng nhập địa điểm đến!");
-            return;
-        }
-        try {
-            new DirectionFinder(getActivity(), this, currentAddress, address).execute();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-    }
+    public void googleDirection(LatLng latLng) {
+        GoogleDirection.withServerKey(GOOGLE_MAP_API_KEY)
+                .from(getCurrentLatLng)
+                .to(latLng)
+                .avoid(AvoidType.HIGHWAYS)
+                .transitMode(TransportMode.BICYCLING)
+                .alternativeRoute(true)
+                .language(Language.VIETNAMESE)
+                .execute(this);
+    } //Tìm đường dùng thư viện
+
+//    private void sendRequest() {
+//        String address = edtAddress.getText().toString();
+//        if (address.isEmpty()) {
+//            L.Toast("Vui lòng nhập địa điểm đến!");
+//            return;
+//        }
+//        try {
+//            new DirectionFinder(getActivity(), this, currentAddress, address).execute();
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public MapFragment() {
         // Required empty public constructor
@@ -92,7 +111,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Dir
         Bundle bundle = new Bundle();
         bundle.putDouble("lat", lat);
         bundle.putDouble("lng", lng);
-        bundle.putString("address",address);
+        bundle.putString("address", address);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -126,11 +145,10 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Dir
             double lat = bundle.getDouble("lat");
             double lng = bundle.getDouble("lng");
             directAddress = bundle.getString("address");
-//            L.Toast("Da nhan duoc vi tri tu order detail: "+lat +" - "+lng);
-            //directMap(lat, lng);
             isDirectEnable = true;
             directLatLng = new LatLng(lat, lng);
         }
+
     }
 
     private void setupLocationButton() {
@@ -166,6 +184,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Dir
         Location location = LocationUtils.getLastKnownLoaction(false, getActivity());
         if (location != null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LocationUtils.getLatLng(location), 18));
+            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LocationUtils.getLatLng(location), 18));
         }
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -178,30 +197,32 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Dir
             return;
         }
         mMap.setMyLocationEnabled(true);
+        mMap.setTrafficEnabled(true);
+
     }
-
-    @Override
-    public void onDirectionFinderStart() {
-
-
-        if (originMarkers != null) {
-            for (Marker marker : originMarkers) {
-                marker.remove();
-            }
-        }
-
-        if (destinationMarkers != null) {
-            for (Marker marker : destinationMarkers) {
-                marker.remove();
-            }
-        }
-
-        if (polylinePaths != null) {
-            for (Polyline polyline : polylinePaths) {
-                polyline.remove();
-            }
-        }
-    }
+//
+//    @Override
+//    public void onDirectionFinderStart() {
+//
+//
+//        if (originMarkers != null) {
+//            for (Marker marker : originMarkers) {
+//                marker.remove();
+//            }
+//        }
+//
+//        if (destinationMarkers != null) {
+//            for (Marker marker : destinationMarkers) {
+//                marker.remove();
+//            }
+//        }
+//
+//        if (polylinePaths != null) {
+//            for (Polyline polyline : polylinePaths) {
+//                polyline.remove();
+//            }
+//        }
+//    }
 
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
@@ -214,29 +235,29 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Dir
         }
     }
 
-    @Override
-    public void onDirectionFinderSuccess(List<Routes> routes) {
-        polylinePaths = new ArrayList<>();
-        originMarkers = new ArrayList<>();
-        destinationMarkers = new ArrayList<>();
-        for (Routes route : routes) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
-            tvDistance.setText(route.distance.text);
-            originMarkers.add(mMap.addMarker(new MarkerOptions()
-                    .title(route.startAddress)
-                    .position(route.startLocation)));
-            destinationMarkers.add(mMap.addMarker(new MarkerOptions()
-                    .title(route.endAddress)
-                    .position(route.endLocation)));
-            PolylineOptions polylineOptions = new PolylineOptions().
-                    geodesic(true).
-                    color(Color.BLUE).
-                    width(10);
-            for (int i = 0; i < route.points.size(); i++)
-                polylineOptions.add(route.points.get(i));
-            polylinePaths.add(mMap.addPolyline(polylineOptions));
-        }
-    }
+//    @Override
+//    public void onDirectionFinderSuccess(List<Routes> routes) {
+//        polylinePaths = new ArrayList<>();
+//        originMarkers = new ArrayList<>();
+//        destinationMarkers = new ArrayList<>();
+//        for (Routes route : routes) {
+//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
+//            tvDistance.setText(route.distance.text);
+//            originMarkers.add(mMap.addMarker(new MarkerOptions()
+//                    .title(route.startAddress)
+//                    .position(route.startLocation)));
+//            destinationMarkers.add(mMap.addMarker(new MarkerOptions()
+//                    .title(route.endAddress)
+//                    .position(route.endLocation)));
+//            PolylineOptions polylineOptions = new PolylineOptions().
+//                    geodesic(true).
+//                    color(Color.BLUE).
+//                    width(10);
+//            for (int i = 0; i < route.points.size(); i++)
+//                polylineOptions.add(route.points.get(i));
+//            polylinePaths.add(mMap.addPolyline(polylineOptions));
+//        }
+//    }
 
 
     @Override
@@ -262,15 +283,15 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Dir
         }
     }
 
-    public void directMap(double lat, double lng) {
-        String noiden = Double.toString(lat) + "," + Double.toString(lng);
-        //L.Toast(currentAddress);
-        try {
-            new DirectionFinder(getActivity(), this, currentAddress, noiden).execute();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void directMap(double lat, double lng) {
+//        String noiden = Double.toString(lat) + "," + Double.toString(lng);
+//        //L.Toast(currentAddress);
+//        try {
+//            new DirectionFinder(getActivity(), this, currentAddress, noiden).execute();
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Override
     public void onConnectionSuspended(int i) {
@@ -280,10 +301,12 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Dir
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
-            currentAddress = Double.toString(location.getLatitude()) + "," + Double.toString(location.getLongitude());
+            //currentAddress = Double.toString(location.getLatitude()) + "," + Double.toString(location.getLongitude());
+            getCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             if (isDirectEnable) {
                 edtAddress.setText(directAddress);
-                directMap(directLatLng.latitude, directLatLng.longitude);
+                //directMap(directLatLng.latitude, directLatLng.longitude);
+                googleDirection(directLatLng);
                 isDirectEnable = false;
             }
         }
@@ -301,6 +324,25 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Dir
 
     @Override
     public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onDirectionSuccess(Direction direction, String rawBody) {
+        if (direction.isOK()) {
+            Route route = direction.getRouteList().get(0);
+            Leg leg = route.getLegList().get(0);
+            mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.cycling)).title(leg.getStartAddress().toString()).position(getCurrentLatLng));
+            mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.townhouse)).title(leg.getEndAddress().toString()).position(directLatLng));
+            tvDistance.setText("Khoảng cách: " + leg.getDistance().getText());
+            ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
+            PolylineOptions polylineOptions = DirectionConverter.createPolyline(getActivity(), directionPositionList, 5, Color.RED);
+            mMap.addPolyline(polylineOptions);
+        }
+    }
+
+    @Override
+    public void onDirectionFailure(Throwable t) {
 
     }
 }
