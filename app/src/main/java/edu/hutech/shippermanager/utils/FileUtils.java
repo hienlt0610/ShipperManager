@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -744,6 +745,12 @@ public class FileUtils {
 
     public static float getFileSizeInMB(File file) {
         return getFileSize(file) / (float)BYTES_TO_MB;
+    }
+
+    public static String generateUniqueFileName() {
+        String DATE_FORMAT="yyyyMMdd_HHmmss-SSS";
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(DATE_FORMAT);
+        return sdf.format(new Date());
     }
 
 }

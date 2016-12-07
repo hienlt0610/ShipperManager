@@ -14,6 +14,7 @@ public class Order {
     private String orderID;
     private User user;
     private boolean isRunning;
+    private String signature;
 
     public Order() {
     }
@@ -103,5 +104,13 @@ public class Order {
 
     public void setRunning(boolean running) {
         isRunning = running;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 }

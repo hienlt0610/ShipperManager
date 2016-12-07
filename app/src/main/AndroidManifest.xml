@@ -31,7 +31,7 @@
             android:value="AIzaSyCsDw_v8GIsJcDVWHijIvDVZYc5wjZjIbc" />
         <meta-data
             android:name="edu.hutech.shippermanager.common.SimpleGlideModule"
-            android:value="GlideModule"/>
+            android:value="GlideModule" />
 
         <activity
             android:name=".ui.activity.MainActivity"
@@ -48,24 +48,27 @@
         <activity
             android:name=".ui.activity.ProfileActivity"
             android:theme="@style/AppTheme.TransparentToolBar" />
-	<activity android:name=".ui.activity.OrderDetailActivity"></activity>
-        <service android:name=".service.GeoService"></service>
+        <activity android:name=".ui.activity.OrderDetailActivity" />
 
+        <service android:name=".service.GeoService" />
         <service
             android:name=".service.FCMService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".service.FirebaseIDService"
+        <service
+            android:name=".service.FirebaseIDService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
+        <activity android:name=".ui.activity.ConfirmActivity"></activity>
     </application>
 
 </manifest>

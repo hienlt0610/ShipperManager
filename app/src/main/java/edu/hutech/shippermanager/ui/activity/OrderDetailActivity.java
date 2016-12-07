@@ -143,6 +143,7 @@ public class OrderDetailActivity extends BaseActivityAuthorization implements Va
     public void onDataChange(DataSnapshot dataSnapshot) {
         Order order = dataSnapshot.getValue(Order.class);
         this.currOrder = order;
+        this.currOrder.setOrderID(dataSnapshot.getKey());
         Date orderDate = TimeUtils.parseDate(order.getTime());
         try {
             tvTime.setText(TimeUtils.dateToString(orderDate, "dd/MM/yyyy hh:mm"));
@@ -186,11 +187,14 @@ public class OrderDetailActivity extends BaseActivityAuthorization implements Va
                 startActivity(intent);
                 break;
             case R.id.btnFinish:
-                itemOrderRef.child("status").setValue(true);
-                FirebaseDatabase.getInstance().getReference("user_location")
-                        .child(getFireBaseAuth()
-                        .getCurrentUser()
-                        .getUid()).child("orders").removeValue();
+//                itemOrderRef.child("status").setValue(true);
+//                FirebaseDatabase.getInstance().getReference("user_location")
+//                        .child(getFireBaseAuth()
+//                        .getCurrentUser()
+//                        .getUid()).child("orders").removeValue();
+                Intent i = new Intent(OrderDetailActivity.this, ConfirmActivity.class);
+                i.putExtra("orderId", currOrder.getOrderID());
+                startActivity(i);
                 this.finish();
                 break;
         }
