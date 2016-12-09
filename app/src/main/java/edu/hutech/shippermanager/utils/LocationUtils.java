@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
@@ -22,7 +24,8 @@ public class LocationUtils {
 
     /**
      * Check if GPS is running
-     * @param context   UI context
+     *
+     * @param context UI context
      * @return boolean
      */
     public static boolean isGpsEnabled(Context context) {
@@ -33,10 +36,11 @@ public class LocationUtils {
 
     /**
      * Build a dialog to ask the user to change his location settings
-     * @param context           UI context
-     * @param message           The message to show to the user in a dialog
-     * @param positiveLabel     The positive button text
-     * @param negativeLabel     The negative button text
+     *
+     * @param context       UI context
+     * @param message       The message to show to the user in a dialog
+     * @param positiveLabel The positive button text
+     * @param negativeLabel The negative button text
      */
     public static void askEnableProviders(final Context context, String message, String positiveLabel, String negativeLabel) {
         new AlertDialog.Builder(context)
@@ -81,13 +85,13 @@ public class LocationUtils {
                 return null;
             }
             utilLocation = manager.getLastKnownLocation(provider);
-            if(utilLocation != null) return utilLocation;
+            if (utilLocation != null) return utilLocation;
         }
         return null;
     }
 
-    public static String locationString(Location location){
-        if(location == null) return "0,0";
+    public static String locationString(Location location) {
+        if (location == null) return "0,0";
         StringBuilder builder = new StringBuilder();
         builder.append(location.getLatitude());
         builder.append(",");
@@ -95,11 +99,36 @@ public class LocationUtils {
         return builder.toString();
     }
 
-    public static String locationString(double lat, double lng){
+    public static String locationString(double lat, double lng) {
         StringBuilder builder = new StringBuilder();
         builder.append(lat);
         builder.append(",");
         builder.append(lng);
         return builder.toString();
+    }
+
+    public static LatLng getLocationFromAddress(Context context, String strAddress) {
+
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+            Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+
+            p1 = new LatLng(location.getLatitude(), location.getLongitude());
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
     }
 }

@@ -63,6 +63,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Goo
     private LatLng directLatLng;
     private String directAddress;
     private LatLng getCurrentLatLng;
+    private LatLng l;
 
     @BindView(R.id.editTextAddress)
     EditText edtAddress;
@@ -72,6 +73,8 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Goo
     @OnClick(R.id.buttonFindPath)
     public void FindPath(View view) {
         //sendRequest();
+        directLatLng = LocationUtils.getLocationFromAddress(getContext(),edtAddress.getText().toString());
+        L.Toast(directLatLng.toString());
         if (mMap != null)
             mMap.clear();
         googleDirection(directLatLng);
@@ -334,6 +337,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback, Goo
             Leg leg = route.getLegList().get(0);
             mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.cycling)).title(leg.getStartAddress().toString()).position(getCurrentLatLng));
             mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.townhouse)).title(leg.getEndAddress().toString()).position(directLatLng));
+
             tvDistance.setText("Khoảng cách: " + leg.getDistance().getText());
             ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
             PolylineOptions polylineOptions = DirectionConverter.createPolyline(getActivity(), directionPositionList, 5, Color.RED);
